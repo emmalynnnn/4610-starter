@@ -9,3 +9,32 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  // creates User table
+  id        Int      @id @default(autoincrement()) //@id indicates that this is going to be the primary key
+  createdAt DateTime @default(now()) //@default sets the default value
+  updatedAt DateTime @updatedAt
+  // We'll normally have at least these^^ three columns in every table in the database
+
+  firstName    String
+  lastName     String
+  email        String @unique //@unique means that it must be unique (obvi)
+  passwordHass String
+
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId Int     @unique
+}
+
+model Profile {
+  // it's a common pattern to have the User table be pretty bare bones, and store more info in Profile, to make querying User faster
+  // Has a 1-1 relation with User
+  id        Int      @id @default(autoincrement()) //@id indicates that this is going to be the primary key
+  createdAt DateTime @default(now()) //@default sets the default value
+  updatedAt DateTime @updatedAt
+
+  age             Int? //? means this is an optional value
+  profileImageUrl String?
+
+  user User?
+}
